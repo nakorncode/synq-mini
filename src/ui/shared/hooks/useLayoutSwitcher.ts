@@ -31,9 +31,10 @@ export const useLayoutSwitcher = () => {
   const handleClick = useCallback(() => {
     const layout = nextLayout(currentLayout);
 
-    if (musicService) {
-      dispatch(setLayout({ musicService, layout }));
-    }
+    // Always store the choice. The music service may still be unknown on the
+    // PiP window's first paint, and dropping the update there is what made the
+    // switcher resize the window without changing the surface.
+    dispatch(setLayout({ musicService, layout }));
 
     const pipWindow = window.documentPictureInPicture?.window;
 

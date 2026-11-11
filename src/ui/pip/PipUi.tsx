@@ -57,19 +57,21 @@ export const PipUi = ({ pipDocument }: PipUiProps) => {
 
 /**
  * The PiP surface always shows a player surface, never the popup's onboarding
- * routes. Which surface is shown is decided by the persisted layout; the popup's
- * own routing would otherwise take over and render a 350px-wide column here.
+ * routes: those would render a 350px-wide column here, which is the wrong shape
+ * for a window the user has resized. Which surface is shown is decided by the
+ * persisted layout.
+ *
+ * Rendering does not wait for the active tab to be known. The tab id arrives
+ * asynchronously from the background worker, and gating on it would leave the
+ * window blank whenever that reply is slower than the window's first paint. The
+ * controller screen already handles a missing tab by showing its idle state, and
+ * it re-renders once the tab resolves.
  */
 const PipRouter = () => {
   const { musicServiceTab } = useMusicServiceTab();
   const layout = useAppSelector((state) =>
     selectLayoutFor(state.layouts, musicServiceTab?.musicService)
   );
-
-  if (!musicServiceTab) {
-    // No service tab is active yet, so there is no player to render.
-    return <EmptyState />;
-  }
 
   return (
     <Container spacing="none" $layout={layout}>
@@ -101,10 +103,4 @@ const Container = styled(Stack)<ContainerProps>`
   & > * {
     flex: 0 0 auto;
   }
-`;
-
-const EmptyState = styled.div`
-  background: ${token('colors.background')};
-  height: 100vh;
-  width: 100vw;
 `;

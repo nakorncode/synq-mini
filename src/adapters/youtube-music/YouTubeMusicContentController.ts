@@ -80,17 +80,40 @@ export class YouTubeMusicContentController implements ContentController {
   /**
    * Opens YouTube Music's save-to-playlist flow for the current track.
    *
-   * YTM has no dedicated playlist button: the flow lives behind the player bar's
-   * "Action menu", which opens a popup containing "Save to playlist". v1 opens
-   * that popup and lets the user pick a playlist in YTM's own UI (see Q8=C), so
-   * the extension never writes playlist membership itself.
+   * YTM has no dedicated playlist button. The "Save to playlist" item lives in
+   * the action menu of the *currently playing queue item*, not in the player bar,
+   * and that menu is only reachable once the queue item is rendered. This opens
+   * that menu and clicks the item, leaving the playlist picker itself to YTM
+   * (see Q8=C), so the extension never writes playlist membership itself.
+   *
+   * Verified against the live player: the queue item menu contains
+   * "Save to playlist" as a `ytmusic-menu-navigation-item-renderer`.
    */
   public openAddToPlaylist(): void {
-    const actionMenuButton = document.querySelector(
-      '.ytmusic-player-bar yt-button-shape button[aria-label="Action menu"]'
+    const queueItemMenu = document.querySelector(
+      'ytmusic-player-queue ytmusic-player-queue-item[selected] ytmusic-menu-renderer button[aria-label="Action menu"], ytmusic-player-queue ytmusic-player-queue-item:first-of-type ytmusic-menu-renderer button[aria-label="Action menu"], ytmusic-player-queue ytmusic-menu-renderer button[aria-label="Action menu"]'
     ) as HTMLElement | null;
 
-    actionMenuButton?.click();
+    queueItemMenu?.click();
+
+    // The menu opens asynchronously, so the item is clicked on the next frames
+    // rather than immediately.
+    const clickSaveToPlaylist = () => {
+      const saveItem = Array.from(
+        document.querySelectorAll(
+          'ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer'
+        )
+      ).find((el) =>
+        (el.textContent ?? '').toLowerCase().includes('save to playlist')
+      ) as HTMLElement | undefined;
+
+      saveItem?.click();
+    };
+
+    requestAnimationFrame(() => {
+      clickSaveToPlaylist();
+      setTimeout(clickSaveToPlaylist, 250);
+    });
   }
 
   public toggleLike(): void {
