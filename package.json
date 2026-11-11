@@ -9,6 +9,8 @@
     "build": "npx rimraf ./build ./.plasmo && plasmo build",
     "test": "vitest run",
     "test:watch": "vitest",
+    "verify:extension": "node scripts/verify-extension.js",
+    "verify:pip": "node scripts/verify-pip.js",
     "package": "plasmo package",
     "format:all": "prettier --write \"**/*.{js,ts,json}\"",
     "format:check": "prettier --check \"**/*.{js,ts,json}\"",
