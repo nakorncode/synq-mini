@@ -70,6 +70,10 @@ export class SpotifyContentController implements ContentController {
     this._getElement<HTMLButtonElement>(SELECTORS.repeatButton)?.click();
   }
 
+  public toggleShuffle(): void {
+    this._getElement<HTMLButtonElement>(SELECTORS.shuffleButton)?.click();
+  }
+
   public toggleLike(): void {
     this._getElement<HTMLButtonElement>(SELECTORS.likeButton)?.click();
   }

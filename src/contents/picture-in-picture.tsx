@@ -1,11 +1,12 @@
-import { Button, UiProvider } from '@synqapp/ui';
-import type { PlasmoCSConfig, PlasmoCSUIProps, PlasmoGetStyle } from 'plasmo';
+import { UiProvider } from '@synqapp/ui';
+import type { PlasmoCSConfig, PlasmoCSUIProps } from 'plasmo';
 import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 
-import { sendToContent } from '~core/messaging/sendToContent';
+import { sizeForLayout } from '~core/layout/layoutSwitcher';
 import { store } from '~store';
+import { selectLayoutFor } from '~store/slices/layouts';
 import { PipToggleButton } from '~ui/pip/PipToggleButton';
 import { PipUi } from '~ui/pip/PipUi';
 import { sendAnalytic } from '~util/analytics';
@@ -61,9 +62,18 @@ const PipTriggerUi = ({ anchor }: PlasmoCSUIProps) => {
   }, []);
 
   const handleButtonClick = async () => {
+    // Open at the size of the layout the user last chose, rather than a fixed
+    // size, so the window matches the persisted preference from the start.
+    // This content script runs outside React providers, so state comes straight
+    // from the store rather than from a context hook.
+    const { musicServiceTabs, layouts } = store.getState();
+    const musicService = Object.values(musicServiceTabs)[0]?.musicService;
+    const layout = selectLayoutFor(layouts, musicService);
+    const { width, height } = sizeForLayout(layout);
+
     const pipWindow = await window.documentPictureInPicture?.requestWindow({
-      width: 350,
-      height: 350
+      width,
+      height
     });
 
     if (!pipWindow) return;
@@ -80,7 +90,7 @@ const PipTriggerUi = ({ anchor }: PlasmoCSUIProps) => {
 
     setShowButton(false);
 
-    sendAnalytic({ name: 'pip_opened' });
+    sendAnalytic({ name: 'pip_opened', params: { layout } });
 
     pipWindow.addEventListener('pagehide', () => {
       setShowButton(true);

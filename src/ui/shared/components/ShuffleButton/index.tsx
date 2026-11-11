@@ -1,11 +1,14 @@
 import { Icon } from '@synqapp/ui';
 import { css, styled, useTheme } from 'styled-components';
 
+import { useShuffleButton } from './useShuffleButton';
+
 interface ShuffleButtonProps {
   size?: number;
 }
 
 export const ShuffleButton = ({ size }: ShuffleButtonProps) => {
+  const { handleClick } = useShuffleButton();
   const theme = useTheme();
 
   if (!size) {
@@ -13,7 +16,7 @@ export const ShuffleButton = ({ size }: ShuffleButtonProps) => {
   }
 
   return (
-    <Container onClick={() => console.log('shuffle')} $size={`${size}px`}>
+    <Container onClick={handleClick} $size={`${size}px`} aria-label="Shuffle">
       <Icon
         width={size * 0.66}
         height={size * 0.66}

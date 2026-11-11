@@ -43,6 +43,7 @@ export interface MusicKit {
   skipToNextItem: () => void;
   skipToPreviousItem: () => void;
   repeatMode: number;
+  shuffleMode: number;
   volume: number;
   isPlaying: boolean;
   currentPlaybackTime: number;

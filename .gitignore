@@ -37,3 +37,6 @@ keys.json
 
 # typescript
 .tsbuildinfo
+.build-baseline.log
+.install.log
+.scratch/

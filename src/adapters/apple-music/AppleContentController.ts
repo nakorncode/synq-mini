@@ -72,6 +72,16 @@ export class AppleContentController implements ContentController {
   }
 
   /**
+   * Apple Music's `MusicKit` shuffles by mutating `shuffleMode`, where 0 is off
+   * and 1 is songs. Any other value is treated as "on" and toggled off.
+   */
+  public toggleShuffle(): void {
+    const player = this.getPlayer();
+
+    player.shuffleMode = player.shuffleMode === 0 ? 1 : 0;
+  }
+
+  /**
    * No-op. Apple Music web player doesn't support likes/dislikes.
    */
   public toggleLike(): void {

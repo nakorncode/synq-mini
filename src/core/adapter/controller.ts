@@ -78,6 +78,11 @@ export interface ContentController {
   toggleRepeatMode(): ValueOrPromise<void>;
 
   /**
+   * Toggle shuffle on or off.
+   */
+  toggleShuffle(): ValueOrPromise<void>;
+
+  /**
    * Like the current track.
    */
   toggleLike(): ValueOrPromise<void>;
@@ -137,6 +142,14 @@ export interface ContentController {
    * popup closes.
    */
   closeQueue?(): ValueOrPromise<void>;
+
+  /**
+   * Open the service's own "save to playlist" flow for the current track.
+   *
+   * Optional: services without a usable playlist UI simply omit it, and the
+   * button is not rendered for them.
+   */
+  openAddToPlaylist?(): ValueOrPromise<void>;
 
   /**
    * Get basic track details for current link.

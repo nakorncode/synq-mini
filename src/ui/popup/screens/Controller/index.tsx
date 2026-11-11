@@ -3,14 +3,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Scrollable, Text, token } from '@synqapp/ui';
 import styled, { css } from 'styled-components';
 
-import Layout from '~ui/popup/Layout';
+import { Layout as PlayerLayout } from '~core/layout/Layout';
+import { useAppSelector } from '~store';
+import { selectLayoutFor } from '~store/slices/layouts';
+import PopupLayout from '~ui/popup/Layout';
 import { Player } from '~ui/popup/components/Player';
 import { usePopupSettings } from '~ui/popup/contexts/PopupSettingsContext';
 import { Queue } from '~ui/shared/components/Queue';
+import { useMusicServiceTab } from '~ui/shared/contexts/MusicServiceTab';
 
 import adapters from '../../../../adapters';
 import type { MusicService } from '../../../../types';
-import { useMusicServiceTab } from '../../../shared/contexts/MusicServiceTab';
+import { CinemaLayout } from './CinemaLayout';
+import { CompactLayout } from './CompactLayout';
 import useControllerScreen from './useControllerScreen';
 
 const PLAYER_HEIGHT = 135;
@@ -25,13 +30,26 @@ const ControllerScreen = () => {
   const { musicServiceTab } = useMusicServiceTab();
   const { queueCollapsible, document } = usePopupSettings();
   const { showQueue, setShowQueue } = useControllerScreen();
+  const layout = useAppSelector((state) =>
+    selectLayoutFor(state.layouts, musicServiceTab?.musicService)
+  );
 
   const handleShowQueueButtonPress = () => {
     setShowQueue(!showQueue);
   };
 
+  // The cinema and compact surfaces are complete player surfaces of their own;
+  // they do not host the queue, which is what lets them be resized freely.
+  if (layout === PlayerLayout.Cinema) {
+    return <CinemaLayout />;
+  }
+
+  if (layout === PlayerLayout.Compact) {
+    return <CompactLayout />;
+  }
+
   return (
-    <Layout hideButton>
+    <PopupLayout hideButton>
       <PlayerSection>
         <div>
           <Player />
@@ -54,7 +72,7 @@ const ControllerScreen = () => {
           </Scrollable>
         </QueueSection>
       )}
-    </Layout>
+    </PopupLayout>
   );
 };
 
@@ -79,8 +97,6 @@ const ExpandButton = styled.button`
   outline: none;
   position: absolute;
   width: 50px;
-  display: flex;
-  justify-content: center;
 `;
 
 const ExpandIcon = styled(FontAwesomeIcon)`

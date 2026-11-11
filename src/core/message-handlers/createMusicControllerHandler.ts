@@ -67,6 +67,11 @@ export const createContentControllerHandler = (
         break;
       }
 
+      case MusicControllerMessage.TOGGLE_SHUFFLE: {
+        await controller.toggleShuffle();
+        break;
+      }
+
       case MusicControllerMessage.PLAY_QUEUE_TRACK: {
         await controller.playQueueTrack(
           message.body.trackId,
@@ -77,6 +82,11 @@ export const createContentControllerHandler = (
 
       case MusicControllerMessage.OPEN_QUEUE: {
         await controller.openQueue?.();
+        break;
+      }
+
+      case MusicControllerMessage.OPEN_ADD_TO_PLAYLIST: {
+        await controller.openAddToPlaylist?.();
         break;
       }
 

@@ -129,6 +129,22 @@ export class AmazonContentController implements ContentController {
   }
 
   /**
+   * Toggle shuffle by clicking the player's shuffle control.
+   *
+   * Amazon's player store exposes no verified shuffle action, so this drives the
+   * UI the same way the like/dislike controls are driven below. A missing
+   * control is a no-op rather than a thrown error, because the shuffle button is
+   * only rendered once a queue is active.
+   */
+  public toggleShuffle(): void {
+    const shuffleButton = document.querySelector(
+      'music-button[data-testid="shuffle"], [data-testid="shuffle-button"], button[aria-label*="huffle"]'
+    ) as HTMLElement | null;
+
+    shuffleButton?.click();
+  }
+
+  /**
    * Toggle the like button.
    *
    * The store dispatch option of toggling like/dislike is more complicated

@@ -66,6 +66,33 @@ export class YouTubeMusicContentController implements ContentController {
     (document.querySelector('.repeat') as HTMLElement).click();
   }
 
+  public toggleShuffle(): void {
+    // The player bar renders two shuffle buttons: one in the collapsed controls
+    // and one inside the expanded panel (`#expand-shuffle`). Scope to the
+    // collapsed `.shuffle` so the click always targets the visible control.
+    const shuffleButton = document.querySelector(
+      '.shuffle.ytmusic-player-bar'
+    ) as HTMLElement | null;
+
+    shuffleButton?.click();
+  }
+
+  /**
+   * Opens YouTube Music's save-to-playlist flow for the current track.
+   *
+   * YTM has no dedicated playlist button: the flow lives behind the player bar's
+   * "Action menu", which opens a popup containing "Save to playlist". v1 opens
+   * that popup and lets the user pick a playlist in YTM's own UI (see Q8=C), so
+   * the extension never writes playlist membership itself.
+   */
+  public openAddToPlaylist(): void {
+    const actionMenuButton = document.querySelector(
+      '.ytmusic-player-bar yt-button-shape button[aria-label="Action menu"]'
+    ) as HTMLElement | null;
+
+    actionMenuButton?.click();
+  }
+
   public toggleLike(): void {
     // Simulate a click on the like button
     (

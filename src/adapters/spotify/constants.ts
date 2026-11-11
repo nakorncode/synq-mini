@@ -3,6 +3,7 @@ export const SELECTORS = {
   nextButton: 'button[data-testid="control-button-skip-forward"]',
   previousButton: 'button[data-testid="control-button-skip-back"]',
   repeatButton: 'button[data-testid="control-button-repeat"]',
+  shuffleButton: 'button[data-testid="control-button-shuffle"]',
   muteButton: 'button[data-testid="volume-bar-toggle-mute-button"]',
   volumeBar: 'div[data-testid="volume-bar"]',
   progressBar: 'div[data-testid="playback-progressbar"]',
